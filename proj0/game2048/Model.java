@@ -1,7 +1,6 @@
 package game2048;
 
-import java.util.Formatter;
-import java.util.Observable;
+import java.util.*;
 
 
 /**
@@ -136,13 +135,63 @@ public class Model extends Observable {
      * value, then the leading two tiles in the direction of motion merge,
      * and the trailing tile does not.
      */
+    boolean[][] merged=new boolean[4][4];
+    private void clearMerged(){
+        for (int i=0;i<4;i++){
+            for(int j=0;j<4;j++){
+                merged[i][j]=false;
+            }
+        }
+    }
+    private void setMerged(Tile t){
+        merged[t.col()][t.row()]=true;
+    }
+    private boolean isMerged(Tile t){
+        return merged[t.col()][t.row()];
+    }
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
+        Board board=this.board;
 
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
+        board.setViewingPerspective(side);
+        clearMerged();
+        for(int i=0;i<4;i++){       //i:col
+            for(int j=2;j>=0;j--){  //j:row
+
+                Tile t=board.tile(i,j);
+                if(t==null) continue;
+                int upvalue=0;
+                List<Tile> T=new ArrayList<>();
+                for(int k=j+1;k<4;k++){
+                    Tile tmp=board.tile(i,k);
+                    T.add(tmp);
+                }
+                boolean gotnearest=false;
+
+                for(int m=0;m<T.size();m++){
+                    if(T.get(m)==null){
+                        upvalue++;
+                    }
+                    else if(!gotnearest){
+                        gotnearest=true;
+                        if(T.get(m).value()==t.value()&&!isMerged(T.get(m))){
+                            upvalue++;
+                            t.merge(i,j,T.get(m));
+                            setMerged(T.get(m));
+                            score+=t.value()*2;
+                        }
+                    }
+                }
+                board.move(i,j+upvalue,t);
+
+                changed=true;
+            }
+        }
+        board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
         if (changed) {
