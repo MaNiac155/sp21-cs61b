@@ -1,5 +1,7 @@
 package timingtest;
 
+import java.util.Arrays;
+
 /** An SLList is a list of integers, which hides the terrible truth
  * of the nakedness within. */
 public class SLList<Item> {
@@ -73,9 +75,10 @@ public class SLList<Item> {
 	}
 
 	public static void main(String[] args) {
-		/* Creates a list of one integer, namely 10 */
+//		/* Creates a list of one integer, namely 10 */
 		SLList L = new SLList();
 		L.addLast(20);
 		System.out.println(L.size());
+
 	}
 }
