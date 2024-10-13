@@ -8,7 +8,7 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
     private int size;
     private int front;
     private int rear;
-    private int capacity=8;
+    private int capacity=4;
 
     @Override
     public T get(int index) {
@@ -23,11 +23,45 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         }
         System.out.println();
     }
+    private void smallerResize(){
+        T[] a=(T[]) new Object[capacity/2];
+        if(rear<front){
+            System.arraycopy(array,0,a,0,rear);
+            System.arraycopy(array,front,a,capacity-front,capacity-front);
+            front=capacity-front;
+        }
+        else {
+            System.arraycopy(array,front,a,0,size);
+            front=0;
+            rear=size;
+        }
+        array=a;
+        capacity=capacity/2;
+    }
+//    private void biggerResize(){
+//        T[] a=(T[]) new Object[capacity*2];
+//        if(rear<front){
+//            System.arraycopy(array,0,a,0,rear);
+//            System.arraycopy(array,front,a,capacity+front,capacity-front);
+//            front=capacity+front;
+//        }
+//        else{
+//            System.arraycopy(array,front,a,front,capacity);
+//        }
+//        array=a;
+//        capacity=capacity*2;
+//    }
 
     @Override
     public T removeLast() {
+        if(size==0) return null;
+
+        if(size>4&&size<=capacity/4){
+            smallerResize();
+        }
         size--;
-        rear--;
+        if(rear==0) rear=capacity;
+        rear=(rear-1)%capacity;
         T tmp=array[rear];
         array[rear]=null;
         return tmp;
@@ -35,6 +69,10 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
 
     @Override
     public T removeFirst() {
+        if(size==0) return null;
+        if(size>4&&size<=capacity/4){
+            smallerResize();
+        }
         size--;
         T tmp=array[front];
         array[front]=null;
@@ -47,9 +85,25 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
         return size;
     }
 
+    private void biggerResize(){
+        T[] a=(T[]) new Object[capacity*2];
+        if(rear<front){
+            System.arraycopy(array,0,a,0,rear);
+            System.arraycopy(array,front,a,capacity+front,capacity-front);
+            front=capacity+front;
+        }
+        else{
+            System.arraycopy(array,front,a,front,size);
+        }
+        array=a;
+        capacity=capacity*2;
+    }
 
     @Override
     public void addLast(T item) {
+        if((rear+1)%capacity==front){
+            biggerResize();
+        }
         array[rear]=item;
         size++;
         rear=(rear+1)%capacity;
@@ -57,6 +111,9 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
 
     @Override
     public void addFirst(T item) {
+        if((rear+1)%capacity==front){
+            biggerResize();
+        }
         if(front==0) front=capacity;
         front=(front-1)%capacity;
         array[front]=item;
@@ -92,5 +149,16 @@ public class ArrayDeque<T> implements Deque<T>,Iterable<T> {
                 throw new NoSuchElementException();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        ArrayDeque<Integer> a=new ArrayDeque<Integer>();
+       for(int i=1;i<200;i++){
+           a.addFirst(i);
+       }
+       for(int i=0;i<197;i++){
+           a.removeLast();
+       }
+        a.printDeque();
     }
 }
