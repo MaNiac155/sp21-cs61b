@@ -1,5 +1,8 @@
 package deque;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 class ListNode<T>{
     T value;
     ListNode next;
@@ -17,16 +20,12 @@ class ListNode<T>{
 
 }
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Iterable<T>,Deque<T>{
     ListNode<T> head;
     int size=0;
     public LinkedListDeque() {
         head=new ListNode<T>(null,null,null);
 
-    }
-
-    public boolean isEmpty(){
-        return size==0;
     }
     public int size(){
         return size;
@@ -98,21 +97,45 @@ public class LinkedListDeque<T> {
         return node.value;
     }
 
-
-
-
-
-    public static void main(String[] args) {
-        LinkedListDeque deque=new LinkedListDeque<Integer>();
-        deque.printDeque();
-        deque.addFirst(1);
-        deque.addFirst(2);
-        deque.addFirst(3);
-        deque.removeFirst();
-        deque.removeLast();
-        deque.printDeque();
-
+    @Override
+    public Iterator<T> iterator(){
+        return new LinkedListDequeIterator();
     }
+    private class LinkedListDequeIterator implements Iterator<T>{
+        private int currentIndex=0;
+        private ListNode<T> current=head.next;
 
+        @Override
+        public boolean hasNext(){
+            return currentIndex<size;
+        }
 
+        @Override
+        public T next(){
+            if(currentIndex<=size){
+                T v=current.value;
+                current=current.next;
+                currentIndex++;
+                return v;
+            }
+            else{
+                throw new NoSuchElementException();
+            }
+        }
+    }
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof LinkedListDeque)) return false;
+        LinkedListDeque<T> other = (LinkedListDeque<T>) o;
+        if(size!=other.size) return false;
+
+        ListNode<T> temp1=head.next;
+        ListNode<T> temp2=other.head.next;
+        while(temp1!=head&&temp2!=head){
+            if(temp1.value!=temp2.value) return false;
+            temp1=temp1.next;
+            temp2=temp2.next;
+        }
+        return true;
+    }
 }
