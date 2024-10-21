@@ -1,4 +1,5 @@
 package gh2;
+
 import edu.princeton.cs.algs4.StdAudio;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -10,7 +11,6 @@ public class GuitarHeroLite {
     public static final double CONCERT_C = CONCERT_A * Math.pow(2, 3.0 / 12.0);
     public static final double CONCERT_G = CONCERT_A * Math.pow(2, 10.0 / 12.0);
     public static final double CONCERT_E = CONCERT_A * Math.pow(2, 7.0 / 12.0);
-
 
 
     public static void main(String[] args) {
@@ -29,7 +29,7 @@ public class GuitarHeroLite {
                     stringA.pluck();
                 } else if (key == 'c') {
                     stringC.pluck();
-                }else if (key == 'g') {
+                } else if (key == 'g') {
                     stringG.pluck();
                 } else if (key == 'e') {
                     stringE.pluck();
@@ -38,7 +38,7 @@ public class GuitarHeroLite {
             }
 
             /* compute the superposition of samples */
-            double sample = stringA.sample() + stringC.sample()+stringG.sample()+stringE.sample();
+            double sample = stringA.sample() + stringC.sample() + stringG.sample() + stringE.sample();
 
             /* play the sample on standard audio */
             StdAudio.play(sample);
