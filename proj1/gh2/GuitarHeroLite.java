@@ -8,11 +8,17 @@ import edu.princeton.cs.algs4.StdDraw;
 public class GuitarHeroLite {
     public static final double CONCERT_A = 440.0;
     public static final double CONCERT_C = CONCERT_A * Math.pow(2, 3.0 / 12.0);
+    public static final double CONCERT_G = CONCERT_A * Math.pow(2, 10.0 / 12.0);
+    public static final double CONCERT_E = CONCERT_A * Math.pow(2, 7.0 / 12.0);
+
+
 
     public static void main(String[] args) {
         /* create two guitar strings, for concert A and C */
         GuitarString stringA = new GuitarString(CONCERT_A);
         GuitarString stringC = new GuitarString(CONCERT_C);
+        GuitarString stringG = new GuitarString(CONCERT_G);
+        GuitarString stringE = new GuitarString(CONCERT_E);
 
         while (true) {
 
@@ -23,11 +29,16 @@ public class GuitarHeroLite {
                     stringA.pluck();
                 } else if (key == 'c') {
                     stringC.pluck();
+                }else if (key == 'g') {
+                    stringG.pluck();
+                } else if (key == 'e') {
+                    stringE.pluck();
                 }
+
             }
 
             /* compute the superposition of samples */
-            double sample = stringA.sample() + stringC.sample();
+            double sample = stringA.sample() + stringC.sample()+stringG.sample()+stringE.sample();
 
             /* play the sample on standard audio */
             StdAudio.play(sample);
@@ -35,6 +46,8 @@ public class GuitarHeroLite {
             /* advance the simulation of each guitar string by one step */
             stringA.tic();
             stringC.tic();
+            stringG.tic();
+            stringE.tic();
         }
     }
 }
